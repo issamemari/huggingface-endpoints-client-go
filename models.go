@@ -7,7 +7,7 @@ type ListEndpointResponse struct {
 }
 
 type Endpoint struct {
-	AccountId string   `json:"accountId"`
+	AccountId *string  `json:"accountId"`
 	Compute   Compute  `json:"compute"`
 	Model     Model    `json:"model"`
 	Name      string   `json:"name"`
