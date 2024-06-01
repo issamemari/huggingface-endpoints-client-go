@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) ListEndpoints() ([]EndpointDetails, error) {
+func (c *Client) ListEndpoints() ([]Endpoint, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", c.HostURL, c.Namespace), nil)
 	if err != nil {
 		return nil, err
@@ -23,5 +23,5 @@ func (c *Client) ListEndpoints() ([]EndpointDetails, error) {
 		return nil, err
 	}
 
-	return response.EndpointDetails, nil
+	return response.Endpoints, nil
 }

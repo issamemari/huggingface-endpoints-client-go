@@ -3,16 +3,16 @@ package huggingface
 import "time"
 
 type ListEndpointResponse struct {
-	EndpointDetails []EndpointDetails `json:"items"`
+	Endpoints []Endpoint `json:"items"`
 }
 
-type EndpointDetails struct {
+type Endpoint struct {
 	AccountId string   `json:"accountId"`
 	Compute   Compute  `json:"compute"`
 	Model     Model    `json:"model"`
 	Name      string   `json:"name"`
 	Provider  Provider `json:"provider"`
-	Status    Status   `json:"status"`
+	Status    *Status  `json:"status"`
 	Type      string   `json:"type"`
 }
 
