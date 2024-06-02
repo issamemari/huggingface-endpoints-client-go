@@ -115,7 +115,6 @@ func TestUpdateEndpoint(t *testing.T) {
 		panic(err)
 	}
 
-	// Assuming UpdateEndpoint method exists and updates the endpoint
 	endpoint.Compute.InstanceSize = "x8"
 	_, err = client.UpdateEndpoint(*endpoint.Name, endpoint)
 	if err != nil {

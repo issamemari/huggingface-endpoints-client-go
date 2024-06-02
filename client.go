@@ -1,8 +1,6 @@
 package huggingface
 
 import (
-	"fmt"
-	"io"
 	"net/http"
 	"time"
 )
@@ -19,8 +17,7 @@ type Client struct {
 func NewClient(host, namespace, token *string) (*Client, error) {
 	c := Client{
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
-		// Default HuggingFace endpoints URL
-		HostURL: HostURL,
+		HostURL:    HostURL,
 	}
 
 	if host != nil {
@@ -35,26 +32,4 @@ func NewClient(host, namespace, token *string) (*Client, error) {
 	c.Namespace = *namespace
 
 	return &c, nil
-}
-
-func (c *Client) DoRequest(req *http.Request) ([]byte, error) {
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
-	req.Header.Set("Content-Type", "application/json")
-
-	res, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
-	}
-
-	return body, err
 }
