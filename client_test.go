@@ -58,7 +58,7 @@ func newTestEndpoint() Endpoint {
 			Revision:   "main",
 			Task:       "sentence-embeddings",
 		},
-		Name: &name,
+		Name: name,
 		Provider: &Provider{
 			Region: "us-east-1",
 			Vendor: "aws",
@@ -82,7 +82,7 @@ func TestCreateAndDeleteEndpoint(t *testing.T) {
 		panic(err)
 	}
 
-	err = client.DeleteEndpoint(*endpoint.Name)
+	err = client.DeleteEndpoint(endpoint.Name)
 	if err != nil {
 		panic(err)
 	}
@@ -96,12 +96,12 @@ func TestGetEndpoint(t *testing.T) {
 		panic(err)
 	}
 
-	_, err = client.GetEndpoint(*endpoint.Name)
+	_, err = client.GetEndpoint(endpoint.Name)
 	if err != nil {
 		panic(err)
 	}
 
-	err = client.DeleteEndpoint(*endpoint.Name)
+	err = client.DeleteEndpoint(endpoint.Name)
 	if err != nil {
 		panic(err)
 	}
@@ -116,12 +116,12 @@ func TestUpdateEndpoint(t *testing.T) {
 	}
 
 	endpoint.Compute.InstanceSize = "x8"
-	_, err = client.UpdateEndpoint(*endpoint.Name, endpoint)
+	_, err = client.UpdateEndpoint(endpoint.Name, endpoint)
 	if err != nil {
 		panic(err)
 	}
 
-	err = client.DeleteEndpoint(*endpoint.Name)
+	err = client.DeleteEndpoint(endpoint.Name)
 	if err != nil {
 		panic(err)
 	}
