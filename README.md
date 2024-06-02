@@ -1,3 +1,3 @@
-# huggingface-endpoints-client
+# huggingface-endpoints-client-go
 
 Go client for the HuggingFace endpoints API.
