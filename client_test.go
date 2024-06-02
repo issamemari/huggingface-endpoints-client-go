@@ -8,7 +8,7 @@ var client *Client
 
 func TestMain(m *testing.M) {
 	host := "https://api.endpoints.huggingface.cloud/v2/endpoint"
-	namespace := ""
+	namespace := "issamemari"
 	token := ""
 
 	var err error
@@ -27,7 +27,7 @@ func TestListEndpoints(t *testing.T) {
 	}
 }
 
-func TestCreateEndpoint(t *testing.T) {
+func TestCreateAndDeleteEndpoint(t *testing.T) {
 	endpoint := Endpoint{
 		AccountId: nil,
 		Compute: Compute{
@@ -47,9 +47,9 @@ func TestCreateEndpoint(t *testing.T) {
 					Env: map[string]interface{}{},
 				},
 			},
-			Repository: "GorgiasML/article_reranker",
-			Revision:   "696d7548fe4bad7a9da6b846b05ce4416ab89f07",
-			Task:       "custom",
+			Repository: "sentence-transformers/all-MiniLM-L6-v2",
+			Revision:   "main",
+			Task:       "sentence-embeddings",
 		},
 		Name: "issa-test-endpoint",
 		Provider: Provider{
@@ -60,6 +60,19 @@ func TestCreateEndpoint(t *testing.T) {
 	}
 
 	_, err := client.CreateEndpoint(endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	err = client.DeleteEndpoint(endpoint.Name)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestGetEndpoint(t *testing.T) {
+	endpointId := "issa-test-endpoint"
+	_, err := client.GetEndpoint(endpointId)
 	if err != nil {
 		panic(err)
 	}
