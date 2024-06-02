@@ -7,13 +7,13 @@ type ListEndpointResponse struct {
 }
 
 type Endpoint struct {
-	AccountId *string  `json:"accountId"`
-	Compute   Compute  `json:"compute"`
-	Model     Model    `json:"model"`
-	Name      string   `json:"name"`
-	Provider  Provider `json:"provider"`
-	Status    *Status  `json:"status"`
-	Type      string   `json:"type"`
+	AccountId *string   `json:"accountId"`
+	Compute   Compute   `json:"compute"`
+	Model     Model     `json:"model"`
+	Name      *string   `json:"name"`
+	Provider  *Provider `json:"provider"`
+	Status    *Status   `json:"status"`
+	Type      string    `json:"type"`
 }
 
 type Compute struct {

@@ -1,7 +1,10 @@
 package huggingface
 
 import (
+	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 )
 
 var client *Client
@@ -20,15 +23,19 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
-func TestListEndpoints(t *testing.T) {
-	_, err := client.ListEndpoints()
-	if err != nil {
-		panic(err)
+func randomString(n int) string {
+	const letters = "abcdefghijklmnopqrstuvwxyz"
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[rng.Intn(len(letters))]
 	}
+	return string(b)
 }
 
-func TestCreateAndDeleteEndpoint(t *testing.T) {
-	endpoint := Endpoint{
+func newTestEndpoint() Endpoint {
+	name := fmt.Sprintf("test-endpoint-%s", randomString(4))
+	return Endpoint{
 		AccountId: nil,
 		Compute: Compute{
 			Accelerator:  "cpu",
@@ -51,28 +58,71 @@ func TestCreateAndDeleteEndpoint(t *testing.T) {
 			Revision:   "main",
 			Task:       "sentence-embeddings",
 		},
-		Name: "issa-test-endpoint",
-		Provider: Provider{
+		Name: &name,
+		Provider: &Provider{
 			Region: "us-east-1",
 			Vendor: "aws",
 		},
 		Type: "protected",
 	}
+}
+
+func TestListEndpoints(t *testing.T) {
+	_, err := client.ListEndpoints()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestCreateAndDeleteEndpoint(t *testing.T) {
+	endpoint := newTestEndpoint()
 
 	_, err := client.CreateEndpoint(endpoint)
 	if err != nil {
 		panic(err)
 	}
 
-	err = client.DeleteEndpoint(endpoint.Name)
+	err = client.DeleteEndpoint(*endpoint.Name)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func TestGetEndpoint(t *testing.T) {
-	endpointId := "issa-test-endpoint"
-	_, err := client.GetEndpoint(endpointId)
+	endpoint := newTestEndpoint()
+
+	_, err := client.CreateEndpoint(endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = client.GetEndpoint(*endpoint.Name)
+	if err != nil {
+		panic(err)
+	}
+
+	err = client.DeleteEndpoint(*endpoint.Name)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestUpdateEndpoint(t *testing.T) {
+	endpoint := newTestEndpoint()
+
+	_, err := client.CreateEndpoint(endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	// Assuming UpdateEndpoint method exists and updates the endpoint
+	endpoint.Compute.InstanceSize = "x8"
+	_, err = client.UpdateEndpoint(*endpoint.Name, endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	err = client.DeleteEndpoint(*endpoint.Name)
 	if err != nil {
 		panic(err)
 	}

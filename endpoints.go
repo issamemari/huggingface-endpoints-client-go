@@ -87,3 +87,29 @@ func (c *Client) DeleteEndpoint(name string) error {
 
 	return nil
 }
+
+func (c *Client) UpdateEndpoint(name string, endpoint Endpoint) (Endpoint, error) {
+	response := Endpoint{}
+
+	reqBody, err := json.Marshal(endpoint)
+	if err != nil {
+		return response, err
+	}
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/%s/%s", c.HostURL, c.Namespace, name), bytes.NewBuffer(reqBody))
+	if err != nil {
+		return response, err
+	}
+
+	body, err := c.DoRequest(req)
+	if err != nil {
+		return response, err
+	}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return response, err
+	}
+
+	return response, nil
+}
