@@ -24,17 +24,17 @@ type Compute struct {
 }
 
 type Scaling struct {
-	MaxReplica         int `json:"maxReplica"`
-	MinReplica         int `json:"minReplica"`
-	ScaleToZeroTimeout int `json:"scaleToZeroTimeout"`
+	MaxReplica         int  `json:"maxReplica"`
+	MinReplica         int  `json:"minReplica"`
+	ScaleToZeroTimeout *int `json:"scaleToZeroTimeout"`
 }
 
 type Model struct {
-	Framework  string `json:"framework"`
-	Image      Image  `json:"image"`
-	Repository string `json:"repository"`
-	Revision   string `json:"revision"`
-	Task       string `json:"task"`
+	Framework  string  `json:"framework"`
+	Image      Image   `json:"image"`
+	Repository string  `json:"repository"`
+	Revision   *string `json:"revision"`
+	Task       string  `json:"task"`
 }
 
 type Image struct {

@@ -35,6 +35,8 @@ func randomString(n int) string {
 
 func newTestEndpoint() Endpoint {
 	name := fmt.Sprintf("test-endpoint-%s", randomString(4))
+	scaleToZeroTimeout := 15
+	revision := "main"
 	return Endpoint{
 		AccountId: nil,
 		Compute: Compute{
@@ -44,7 +46,7 @@ func newTestEndpoint() Endpoint {
 			Scaling: Scaling{
 				MinReplica:         0,
 				MaxReplica:         1,
-				ScaleToZeroTimeout: 15,
+				ScaleToZeroTimeout: &scaleToZeroTimeout,
 			},
 		},
 		Model: Model{
@@ -55,7 +57,7 @@ func newTestEndpoint() Endpoint {
 				},
 			},
 			Repository: "sentence-transformers/all-MiniLM-L6-v2",
-			Revision:   "main",
+			Revision:   &revision,
 			Task:       "sentence-embeddings",
 		},
 		Name: name,
@@ -117,6 +119,22 @@ func TestUpdateEndpoint(t *testing.T) {
 
 	endpoint.Compute.InstanceSize = "x8"
 	_, err = client.UpdateEndpoint(endpoint.Name, endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	err = client.DeleteEndpoint(endpoint.Name)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestOptionalFields(t *testing.T) {
+	endpoint := newTestEndpoint()
+	endpoint.Model.Revision = nil
+	endpoint.Compute.Scaling.ScaleToZeroTimeout = nil
+
+	_, err := client.CreateEndpoint(endpoint)
 	if err != nil {
 		panic(err)
 	}
