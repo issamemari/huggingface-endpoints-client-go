@@ -33,11 +33,12 @@ func randomString(n int) string {
 	return string(b)
 }
 
-func newTestEndpoint() Endpoint {
+func newCreateEndpointRequest() CreateEndpointRequest {
 	name := fmt.Sprintf("test-endpoint-%s", randomString(4))
 	scaleToZeroTimeout := 15
 	revision := "main"
-	return Endpoint{
+	task := "sentence-embeddings"
+	return CreateEndpointRequest{
 		AccountId: nil,
 		Compute: Compute{
 			Accelerator:  "cpu",
@@ -58,10 +59,10 @@ func newTestEndpoint() Endpoint {
 			},
 			Repository: "sentence-transformers/all-MiniLM-L6-v2",
 			Revision:   &revision,
-			Task:       "sentence-embeddings",
+			Task:       &task,
 		},
 		Name: name,
-		Provider: &Provider{
+		Provider: Provider{
 			Region: "us-east-1",
 			Vendor: "aws",
 		},
@@ -69,8 +70,8 @@ func newTestEndpoint() Endpoint {
 	}
 }
 
-func TestCustomImage(t *testing.T) {
-	endpoint := newTestEndpoint()
+func newCreateEndpointRequestWithCustomImage() CreateEndpointRequest {
+	endpoint := newCreateEndpointRequest()
 	endpoint.Model.Image.Custom = &Custom{
 		Credentials: &Credentials{
 			Password: "password",
@@ -84,6 +85,41 @@ func TestCustomImage(t *testing.T) {
 		URL:         "https://example.com",
 	}
 	endpoint.Model.Image.Huggingface = nil
+	return endpoint
+}
+
+func TestCustomImage(t *testing.T) {
+	endpoint := newCreateEndpointRequestWithCustomImage()
+
+	_, err := client.CreateEndpoint(endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	err = client.DeleteEndpoint(endpoint.Name)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestNilCredentials(t *testing.T) {
+	endpoint := newCreateEndpointRequestWithCustomImage()
+	endpoint.Model.Image.Custom.Credentials = nil
+
+	_, err := client.CreateEndpoint(endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	err = client.DeleteEndpoint(endpoint.Name)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestEmptyEnv(t *testing.T) {
+	endpoint := newCreateEndpointRequest()
+	endpoint.Model.Image.Huggingface.Env = map[string]string{}
 
 	_, err := client.CreateEndpoint(endpoint)
 	if err != nil {
@@ -104,7 +140,7 @@ func TestListEndpoints(t *testing.T) {
 }
 
 func TestCreateAndDeleteEndpoint(t *testing.T) {
-	endpoint := newTestEndpoint()
+	endpoint := newCreateEndpointRequest()
 
 	_, err := client.CreateEndpoint(endpoint)
 	if err != nil {
@@ -118,7 +154,7 @@ func TestCreateAndDeleteEndpoint(t *testing.T) {
 }
 
 func TestGetEndpoint(t *testing.T) {
-	endpoint := newTestEndpoint()
+	endpoint := newCreateEndpointRequest()
 
 	_, err := client.CreateEndpoint(endpoint)
 	if err != nil {
@@ -137,15 +173,28 @@ func TestGetEndpoint(t *testing.T) {
 }
 
 func TestUpdateEndpoint(t *testing.T) {
-	endpoint := newTestEndpoint()
+	endpoint := newCreateEndpointRequest()
 
 	_, err := client.CreateEndpoint(endpoint)
 	if err != nil {
 		panic(err)
 	}
 
-	endpoint.Compute.InstanceSize = "x8"
-	_, err = client.UpdateEndpoint(endpoint.Name, endpoint)
+	updateEndpointRequest := UpdateEndpointRequest{
+		Compute: &Compute{
+			Accelerator:  "cpu",
+			InstanceSize: "x8",
+			InstanceType: "intel-icl",
+			Scaling: Scaling{
+				MinReplica: 0,
+				MaxReplica: 1,
+			},
+		},
+		Model: &endpoint.Model,
+		Type:  nil,
+	}
+
+	_, err = client.UpdateEndpoint(endpoint.Name, updateEndpointRequest)
 	if err != nil {
 		panic(err)
 	}
@@ -157,7 +206,7 @@ func TestUpdateEndpoint(t *testing.T) {
 }
 
 func TestOptionalFields(t *testing.T) {
-	endpoint := newTestEndpoint()
+	endpoint := newCreateEndpointRequest()
 	endpoint.Model.Revision = nil
 	endpoint.Compute.Scaling.ScaleToZeroTimeout = nil
 

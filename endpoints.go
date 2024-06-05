@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (c *Client) ListEndpoints() ([]Endpoint, error) {
+func (c *Client) ListEndpoints() ([]EndpointDetails, error) {
 	body, err := c.DoRequest("GET", "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list endpoints: %w", err)
@@ -20,31 +20,31 @@ func (c *Client) ListEndpoints() ([]Endpoint, error) {
 	return response.Endpoints, nil
 }
 
-func (c *Client) CreateEndpoint(endpoint Endpoint) (Endpoint, error) {
+func (c *Client) CreateEndpoint(endpoint CreateEndpointRequest) (EndpointDetails, error) {
 	body, err := c.DoRequest("POST", "", endpoint)
 	if err != nil {
-		return Endpoint{}, fmt.Errorf("failed to create endpoint: %w", err)
+		return EndpointDetails{}, fmt.Errorf("failed to create endpoint: %w", err)
 	}
 
-	var response Endpoint
+	var response EndpointDetails
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return Endpoint{}, fmt.Errorf("failed to unmarshal response: %w", err)
+		return EndpointDetails{}, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
 	return response, nil
 }
 
-func (c *Client) GetEndpoint(name string) (Endpoint, error) {
+func (c *Client) GetEndpoint(name string) (EndpointDetails, error) {
 	body, err := c.DoRequest("GET", name, nil)
 	if err != nil {
-		return Endpoint{}, fmt.Errorf("failed to get endpoint: %w", err)
+		return EndpointDetails{}, fmt.Errorf("failed to get endpoint: %w", err)
 	}
 
-	var response Endpoint
+	var response EndpointDetails
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return Endpoint{}, fmt.Errorf("failed to unmarshal response: %w", err)
+		return EndpointDetails{}, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
 	return response, nil
@@ -58,16 +58,16 @@ func (c *Client) DeleteEndpoint(name string) error {
 	return nil
 }
 
-func (c *Client) UpdateEndpoint(name string, endpoint Endpoint) (Endpoint, error) {
+func (c *Client) UpdateEndpoint(name string, endpoint UpdateEndpointRequest) (EndpointDetails, error) {
 	body, err := c.DoRequest("PUT", name, endpoint)
 	if err != nil {
-		return Endpoint{}, fmt.Errorf("failed to update endpoint: %w", err)
+		return EndpointDetails{}, fmt.Errorf("failed to update endpoint: %w", err)
 	}
 
-	var response Endpoint
+	var response EndpointDetails
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return Endpoint{}, fmt.Errorf("failed to unmarshal response: %w", err)
+		return EndpointDetails{}, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
 	return response, nil

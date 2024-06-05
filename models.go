@@ -1,19 +1,43 @@
 package huggingface
 
-import "time"
-
 type ListEndpointResponse struct {
-	Endpoints []Endpoint `json:"items"`
+	Endpoints []EndpointDetails `json:"items"`
 }
 
-type Endpoint struct {
-	AccountId *string   `json:"accountId"`
-	Compute   Compute   `json:"compute"`
-	Model     Model     `json:"model"`
-	Name      string    `json:"name"`
-	Provider  *Provider `json:"provider"`
-	Status    *Status   `json:"status"`
-	Type      string    `json:"type"`
+type EndpointDetails struct {
+	AccountId *string  `json:"accountId,omitempty"`
+	Compute   Compute  `json:"compute"`
+	Model     Model    `json:"model"`
+	Name      string   `json:"name"`
+	Provider  Provider `json:"provider"`
+	Status    Status   `json:"status"`
+}
+
+type Status struct {
+	CreatedAt     string  `json:"createdAt"`
+	CreatedBy     User    `json:"createdBy"`
+	UpdatedAt     string  `json:"updatedAt"`
+	UpdatedBy     User    `json:"updatedBy"`
+	Private       Private `json:"private"`
+	State         string  `json:"state"`
+	Message       string  `json:"message"`
+	ReadyReplica  int     `json:"readyReplica"`
+	TargetReplica int     `json:"targetReplica"`
+}
+
+type CreateEndpointRequest struct {
+	AccountId *string  `json:"accountId,omitempty"`
+	Compute   Compute  `json:"compute"`
+	Model     Model    `json:"model"`
+	Name      string   `json:"name"`
+	Provider  Provider `json:"provider"`
+	Type      string   `json:"type"`
+}
+
+type UpdateEndpointRequest struct {
+	Compute *Compute `json:"compute,omitempty"`
+	Model   *Model   `json:"model,omitempty"`
+	Type    *string  `json:"type,omitempty"`
 }
 
 type Compute struct {
@@ -26,15 +50,15 @@ type Compute struct {
 type Scaling struct {
 	MaxReplica         int  `json:"maxReplica"`
 	MinReplica         int  `json:"minReplica"`
-	ScaleToZeroTimeout *int `json:"scaleToZeroTimeout"`
+	ScaleToZeroTimeout *int `json:"scaleToZeroTimeout,omitempty"`
 }
 
 type Model struct {
 	Framework  string  `json:"framework"`
 	Image      Image   `json:"image"`
 	Repository string  `json:"repository"`
-	Revision   *string `json:"revision"`
-	Task       string  `json:"task"`
+	Revision   *string `json:"revision,omitempty"`
+	Task       *string `json:"task,omitempty"`
 }
 
 type Image struct {
@@ -43,8 +67,8 @@ type Image struct {
 }
 
 type Custom struct {
-	Credentials *Credentials      `json:"credentials"`
-	Env         map[string]string `json:"env"`
+	Credentials *Credentials      `json:"credentials,omitempty"`
+	Env         map[string]string `json:"env,omitempty"`
 	HealthRoute *string           `json:"health_route,omitempty"`
 	Port        *int              `json:"port,omitempty"` // Constraints: Min 0, Default: 80
 	URL         string            `json:"url"`
@@ -56,26 +80,12 @@ type Credentials struct {
 }
 
 type Huggingface struct {
-	Env map[string]string `json:"env"`
+	Env map[string]string `json:"env,omitempty"`
 }
 
 type Provider struct {
 	Region string `json:"region"`
 	Vendor string `json:"vendor"`
-}
-
-type Status struct {
-	CreatedAt     time.Time `json:"createdAt"`
-	CreatedBy     User      `json:"createdBy"`
-	ErrorMessage  string    `json:"errorMessage"`
-	Message       string    `json:"message"`
-	Private       Private   `json:"private"`
-	ReadyReplica  int       `json:"readyReplica"`
-	State         string    `json:"state"`
-	TargetReplica int       `json:"targetReplica"`
-	UpdatedAt     time.Time `json:"updatedAt"`
-	UpdatedBy     User      `json:"updatedBy"`
-	URL           string    `json:"url"`
 }
 
 type User struct {
