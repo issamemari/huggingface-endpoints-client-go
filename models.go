@@ -38,11 +38,25 @@ type Model struct {
 }
 
 type Image struct {
-	Huggingface Huggingface `json:"huggingface"`
+	Huggingface *Huggingface `json:"huggingface,omitempty"`
+	Custom      *Custom      `json:"custom,omitempty"`
+}
+
+type Custom struct {
+	Credentials *Credentials      `json:"credentials"`
+	Env         map[string]string `json:"env"`
+	HealthRoute *string           `json:"health_route,omitempty"`
+	Port        *int              `json:"port,omitempty"` // Constraints: Min 0, Default: 80
+	URL         string            `json:"url"`
+}
+
+type Credentials struct {
+	Password string `json:"password"`
+	Username string `json:"username"`
 }
 
 type Huggingface struct {
-	Env map[string]interface{} `json:"env"`
+	Env map[string]string `json:"env"`
 }
 
 type Provider struct {

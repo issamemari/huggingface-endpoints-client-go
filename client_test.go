@@ -52,8 +52,8 @@ func newTestEndpoint() Endpoint {
 		Model: Model{
 			Framework: "pytorch",
 			Image: Image{
-				Huggingface: Huggingface{
-					Env: map[string]interface{}{},
+				Huggingface: &Huggingface{
+					Env: map[string]string{},
 				},
 			},
 			Repository: "sentence-transformers/all-MiniLM-L6-v2",
@@ -66,6 +66,33 @@ func newTestEndpoint() Endpoint {
 			Vendor: "aws",
 		},
 		Type: "protected",
+	}
+}
+
+func TestCustomImage(t *testing.T) {
+	endpoint := newTestEndpoint()
+	endpoint.Model.Image.Custom = &Custom{
+		Credentials: &Credentials{
+			Password: "password",
+			Username: "username",
+		},
+		Env: map[string]string{
+			"key": "value",
+		},
+		HealthRoute: nil,
+		Port:        nil,
+		URL:         "https://example.com",
+	}
+	endpoint.Model.Image.Huggingface = nil
+
+	_, err := client.CreateEndpoint(endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	err = client.DeleteEndpoint(endpoint.Name)
+	if err != nil {
+		panic(err)
 	}
 }
 
