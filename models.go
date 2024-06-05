@@ -11,6 +11,7 @@ type EndpointDetails struct {
 	Name      string   `json:"name"`
 	Provider  Provider `json:"provider"`
 	Status    Status   `json:"status"`
+	Type      string   `json:"type"`
 }
 
 type Status struct {
