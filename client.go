@@ -38,19 +38,16 @@ func NewClient(host, namespace, token *string) (*Client, error) {
 	return &c, nil
 }
 
-func (c *Client) DoRequest(method, path string, body interface{}) ([]byte, error) {
+func (c *Client) DoRequest(method, path string, body interface{}) ([]byte, *int, error) {
 	var reqBody *bytes.Buffer
-	var reqBodyJSON string
 	if body != nil {
 		reqBody = new(bytes.Buffer)
 		err := json.NewEncoder(reqBody).Encode(body)
 		if err != nil {
-			return nil, fmt.Errorf("failed to encode request body: %w", err)
+			return nil, nil, fmt.Errorf("%w: %v", ErrEncodingRequestBody, err)
 		}
-		reqBodyJSON = reqBody.String()
 	} else {
 		reqBody = bytes.NewBuffer([]byte{})
-		reqBodyJSON = "{}"
 	}
 
 	url := c.HostURL
@@ -63,7 +60,7 @@ func (c *Client) DoRequest(method, path string, body interface{}) ([]byte, error
 
 	req, err := http.NewRequest(method, url, reqBody)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create new request: %w", err)
+		return nil, nil, fmt.Errorf("%w: %v", ErrCreatingRequest, err)
 	}
 
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
@@ -71,18 +68,14 @@ func (c *Client) DoRequest(method, path string, body interface{}) ([]byte, error
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer res.Body.Close()
 
 	respBody, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return nil, nil, fmt.Errorf("%w: %v", ErrReadingResponseBody, err)
 	}
 
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status: %d, url: %s, request body: %s, response body: %s", res.StatusCode, url, reqBodyJSON, respBody)
-	}
-
-	return respBody, nil
+	return respBody, &res.StatusCode, nil
 }
