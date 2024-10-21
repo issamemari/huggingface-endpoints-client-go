@@ -53,13 +53,12 @@ func newCreateEndpointRequest() CreateEndpointRequest {
 		Model: Model{
 			Framework: "pytorch",
 			Image: Image{
-				Huggingface: &Huggingface{
-					Env: map[string]string{},
-				},
+				Huggingface: &Huggingface{},
 			},
 			Repository: "sentence-transformers/all-MiniLM-L6-v2",
 			Revision:   &revision,
 			Task:       &task,
+			Env:        map[string]string{},
 		},
 		Name: name,
 		Provider: Provider{
@@ -77,12 +76,12 @@ func newCreateEndpointRequestWithCustomImage() CreateEndpointRequest {
 			Password: "password",
 			Username: "username",
 		},
-		Env: map[string]string{
-			"key": "value",
-		},
 		HealthRoute: nil,
 		Port:        nil,
 		URL:         "https://example.com",
+	}
+	endpoint.Model.Env = map[string]string{
+		"key": "value",
 	}
 	endpoint.Model.Image.Huggingface = nil
 	return endpoint
@@ -119,7 +118,7 @@ func TestNilCredentials(t *testing.T) {
 
 func TestEmptyEnv(t *testing.T) {
 	endpoint := newCreateEndpointRequest()
-	endpoint.Model.Image.Huggingface.Env = map[string]string{}
+	endpoint.Model.Env = map[string]string{}
 
 	_, err := client.CreateEndpoint(endpoint)
 	if err != nil {

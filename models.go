@@ -55,11 +55,12 @@ type Scaling struct {
 }
 
 type Model struct {
-	Framework  string  `json:"framework"`
-	Image      Image   `json:"image"`
-	Repository string  `json:"repository"`
-	Revision   *string `json:"revision,omitempty"`
-	Task       *string `json:"task,omitempty"`
+	Framework  string            `json:"framework"`
+	Image      Image             `json:"image"`
+	Repository string            `json:"repository"`
+	Revision   *string           `json:"revision,omitempty"`
+	Task       *string           `json:"task,omitempty"`
+	Env        map[string]string `json:"env,omitempty"`
 }
 
 type Image struct {
@@ -129,11 +130,10 @@ type Tgi struct {
 }
 
 type Custom struct {
-	Credentials *Credentials      `json:"credentials,omitempty"`
-	Env         map[string]string `json:"env,omitempty"`
-	HealthRoute *string           `json:"health_route,omitempty"`
-	Port        *int              `json:"port,omitempty"` // Constraints: Min 0, Default: 80
-	URL         string            `json:"url"`
+	Credentials *Credentials `json:"credentials,omitempty"`
+	HealthRoute *string      `json:"health_route,omitempty"`
+	Port        *int         `json:"port,omitempty"` // Constraints: Min 0, Default: 80
+	URL         string       `json:"url"`
 }
 
 type Credentials struct {
@@ -141,9 +141,7 @@ type Credentials struct {
 	Username string `json:"username"`
 }
 
-type Huggingface struct {
-	Env map[string]string `json:"env,omitempty"`
-}
+type Huggingface struct{}
 
 type Provider struct {
 	Region string `json:"region"`
