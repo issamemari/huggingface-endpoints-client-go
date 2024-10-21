@@ -65,10 +65,20 @@ type Model struct {
 type Image struct {
 	Huggingface *Huggingface `json:"huggingface,omitempty"`
 	Custom      *Custom      `json:"custom,omitempty"`
+	Tei         *Tei         `json:"tei,omitempty"`
 	Tgi         *Tgi         `json:"tgi,omitempty"`
 	TgiTpu      *TgiTpu      `json:"tgiTpu,omitempty"`
 	TgiNeuron   *TgiNeuron   `json:"tgiNeuron,omitempty"`
 	Llamacpp    *Llamacpp    `json:"llamacpp,omitempty"`
+}
+
+type Tei struct {
+	HealthRoute           *string `json:"health_route,omitempty"`
+	Port                  *int    `json:"port,omitempty"`
+	URL                   string  `json:"url"`
+	MaxBatchTokens        *int    `json:"maxBatchTokens,omitempty"`
+	MaxConcurrentRequests *int    `json:"maxConcurrentRequests,omitempty"`
+	Pooling               *string `json:"pooling,omitempty"`
 }
 
 type Llamacpp struct {
