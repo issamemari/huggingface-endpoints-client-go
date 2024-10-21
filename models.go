@@ -65,6 +65,57 @@ type Model struct {
 type Image struct {
 	Huggingface *Huggingface `json:"huggingface,omitempty"`
 	Custom      *Custom      `json:"custom,omitempty"`
+	Tgi         *Tgi         `json:"tgi,omitempty"`
+	TgiTpu      *TgiTpu      `json:"tgi_tpu,omitempty"`
+	TgiNeuron   *TgiNeuron   `json:"tgi_neuron,omitempty"`
+	Llamacpp    *Llamacpp    `json:"llamacpp,omitempty"`
+}
+
+type Llamacpp struct {
+	HealthRoute *string `json:"health_route,omitempty"`
+	Port        *int    `json:"port,omitempty"`
+	URL         string  `json:"url"`
+	CtxSize     *int    `json:"ctxSize,omitempty"`
+	Embeddings  *bool   `json:"embeddings,omitempty"`
+	ModelPath   string  `json:"modelPath"`
+	NParallel   *int    `json:"nParallel,omitempty"`
+	ThreadsHttp *int    `json:"threadsHttp,omitempty"`
+}
+
+type TgiNeuron struct {
+	HealthRoute           *string `json:"health_route,omitempty"`
+	Port                  *int    `json:"port,omitempty"`
+	URL                   string  `json:"url"`
+	MaxBatchPrefillTokens *int    `json:"maxBatchPrefillTokens,omitempty"`
+	MaxBatchTotalTokens   *int    `json:"maxBatchTotalTokens,omitempty"`
+	MaxInputLength        *int    `json:"maxInputLength,omitempty"`
+	MaxTotalTokens        *int    `json:"maxTotalTokens,omitempty"`
+	HfAutoCastType        *string `json:"hfAutoCastType,omitempty"`
+	HfNumCores            *int    `json:"hfNumCores,omitempty"`
+}
+
+type TgiTpu struct {
+	HealthRoute           *string `json:"health_route,omitempty"`
+	Port                  *int    `json:"port,omitempty"`
+	URL                   string  `json:"url"`
+	MaxBatchPrefillTokens *int    `json:"maxBatchPrefillTokens,omitempty"`
+	MaxBatchTotalTokens   *int    `json:"maxBatchTotalTokens,omitempty"`
+	MaxInputLength        *int    `json:"maxInputLength,omitempty"`
+	MaxTotalTokens        *int    `json:"maxTotalTokens,omitempty"`
+	DisableCustomKernels  *bool   `json:"disableCustomKernels,omitempty"`
+	Quantize              *string `json:"quantize,omitempty"`
+}
+
+type Tgi struct {
+	HealthRoute           *string `json:"health_route,omitempty"`
+	Port                  *int    `json:"port,omitempty"`
+	URL                   string  `json:"url"`
+	MaxBatchPrefillTokens *int    `json:"maxBatchPrefillTokens,omitempty"`
+	MaxBatchTotalTokens   *int    `json:"maxBatchTotalTokens,omitempty"`
+	MaxInputLength        *int    `json:"maxInputLength,omitempty"`
+	MaxTotalTokens        *int    `json:"maxTotalTokens,omitempty"`
+	DisableCustomKernels  *bool   `json:"disableCustomKernels,omitempty"`
+	Quantize              *string `json:"quantize,omitempty"`
 }
 
 type Custom struct {
