@@ -66,8 +66,8 @@ type Image struct {
 	Huggingface *Huggingface `json:"huggingface,omitempty"`
 	Custom      *Custom      `json:"custom,omitempty"`
 	Tgi         *Tgi         `json:"tgi,omitempty"`
-	TgiTpu      *TgiTpu      `json:"tgi_tpu,omitempty"`
-	TgiNeuron   *TgiNeuron   `json:"tgi_neuron,omitempty"`
+	TgiTpu      *TgiTpu      `json:"tgiTpu,omitempty"`
+	TgiNeuron   *TgiNeuron   `json:"tgiNeuron,omitempty"`
 	Llamacpp    *Llamacpp    `json:"llamacpp,omitempty"`
 }
 
