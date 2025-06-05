@@ -38,6 +38,7 @@ func newCreateEndpointRequest() CreateEndpointRequest {
 	scaleToZeroTimeout := 15
 	revision := "main"
 	task := "sentence-embeddings"
+	pendingRequests := 1.5
 	return CreateEndpointRequest{
 		AccountId: nil,
 		Compute: Compute{
@@ -45,8 +46,12 @@ func newCreateEndpointRequest() CreateEndpointRequest {
 			InstanceSize: "x4",
 			InstanceType: "intel-icl",
 			Scaling: Scaling{
-				MinReplica:         0,
-				MaxReplica:         1,
+				MinReplica: 0,
+				MaxReplica: 1,
+				Measure: &Measure{
+					PendingRequests: &pendingRequests,
+					HardwareUsage:   nil,
+				},
 				ScaleToZeroTimeout: &scaleToZeroTimeout,
 			},
 		},

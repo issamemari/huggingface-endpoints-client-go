@@ -48,10 +48,16 @@ type Compute struct {
 	Scaling      Scaling `json:"scaling"`
 }
 
+type Measure struct {
+	HardwareUsage   *float64 `json:"hardwareUsage,omitempty"`
+	PendingRequests *float64 `json:"pendingRequests,omitempty"`
+}
+
 type Scaling struct {
-	MaxReplica         int  `json:"maxReplica"`
-	MinReplica         int  `json:"minReplica"`
-	ScaleToZeroTimeout *int `json:"scaleToZeroTimeout,omitempty"`
+	MaxReplica         int      `json:"maxReplica"`
+	MinReplica         int      `json:"minReplica"`
+	ScaleToZeroTimeout *int     `json:"scaleToZeroTimeout,omitempty"`
+	Measure            *Measure `json:"measure,omitempty"`
 }
 
 type Model struct {
